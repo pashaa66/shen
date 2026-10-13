@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block title %}404 · Щен{% endblock %}
+
+{% block content %}
+<section class="page page--center">
+  <h1>404</h1>
+  <p>Страница потерялась. Щен её не нашёл.</p>
+  <p><a href="{% url 'core:home' %}">На главную</a></p>
+</section>
+{% endblock %}

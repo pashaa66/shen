@@ -1,0 +1,45 @@
+{% load static %}
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Щен{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'css/main.css' %}">
+</head>
+<body>
+  <header class="header">
+    <nav class="nav nav--left">
+      <a href="{% url 'core:about' %}">О проекте</a>
+      <a href="#">Мерч</a>
+    </nav>
+
+    <a class="logo" href="{% url 'core:home' %}">Щен</a>
+
+    <nav class="nav nav--right">
+      <a href="#">Личный кабинет</a>
+      <a href="#">Корзина</a>
+    </nav>
+  </header>
+
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="footer">
+    <div class="footer__links">
+      <a href="#">Публичная оферта</a>
+      <a href="#">Персональные данные</a>
+    </div>
+    <div>
+      {{ BRAND.ip_name }} · ИНН {{ BRAND.inn }} · ОГРНИП {{ BRAND.ogrnip }}
+    </div>
+    <div class="footer__links">
+      <a href="mailto:{{ BRAND.email }}">{{ BRAND.email }}</a>
+      <a href="{{ BRAND.vk }}">VK</a>
+      <a href="{{ BRAND.tg }}">Telegram</a>
+      <a href="{{ BRAND.tiktok }}">TikTok</a>
+    </div>
+  </footer>
+</body>
+</html>
