@@ -1,15 +1,26 @@
 import os
 from pathlib import Path
 
-BASE_DIR = Path(__file__).resolve().parent.parent
+from dotenv import load_dotenv
 
-SECRET_KEY = os.environ.get(
-    'DJANGO_SECRET_KEY', 'dev-only-insecure-key-change-me'
-)
-DEBUG = os.environ.get('DJANGO_DEBUG', '1') == '1'
-ALLOWED_HOSTS = os.environ.get(
-    'DJANGO_ALLOWED_HOSTS', 'localhost,127.0.0.1'
-).split(',')
+BASE_DIR = Path(__file__).resolve().parent.parent
+load_dotenv(BASE_DIR / '.env')
+
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', '')
+DEBUG = os.environ.get('DJANGO_DEBUG', '0') == '1'
+ALLOWED_HOSTS = [
+    h.strip()
+    for h in os.environ.get(
+        'DJANGO_ALLOWED_HOSTS', 'localhost,127.0.0.1'
+    ).split(',')
+    if h.strip()
+]
+
+if not SECRET_KEY:
+    if DEBUG:
+        SECRET_KEY = 'dev-only-insecure-key'
+    else:
+        raise RuntimeError('DJANGO_SECRET_KEY не задан в .env')
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -87,10 +98,13 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 BRAND = {
     'name': 'Щен',
     'ip_name': 'ИП',
-    'inn': 'XXXXXXXXXXXX',
-    'ogrnip': 'XXXXXXXXXXXXXXX',
-    'email': 'support@example.com',
-    'vk': 'https://vk.com/',
-    'tg': 'https://t.me/',
-    'tiktok': 'https://www.tiktok.com/',
+    'inn': os.environ.get('BRAND_INN', ''),
+    'ogrnip': os.environ.get('BRAND_OGRNIP', ''),
+    'email': os.environ.get('BRAND_EMAIL', ''),
+    'vk': os.environ.get('BRAND_VK', ''),
+    'tg': os.environ.get('BRAND_TG', ''),
+    'tiktok': os.environ.get('BRAND_TIKTOK', ''),
 }
+
+YOOKASSA_SHOP_ID = os.environ.get('YOOKASSA_SHOP_ID', '')
+YOOKASSA_SECRET_KEY = os.environ.get('YOOKASSA_SECRET_KEY', '')
