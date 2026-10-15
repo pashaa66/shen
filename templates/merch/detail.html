@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %}{{ product.title }} · Щен{% endblock %}
+
+{% block content %}
+<section class="page product">
+  <div class="product__img">
+    {% if product.image %}<img src="{{ product.image.url }}" alt="{{ product.title }}">{% endif %}
+  </div>
+
+  <div class="product__info">
+    <a class="back" href="{% url 'merch:list' %}">← Весь мерч</a>
+    <h1>{{ product.title }}</h1>
+    <p class="card__meta">{{ product.get_kind_display }}{% if product.size %} · {{ product.size }}{% endif %}</p>
+    <p class="product__price">{{ product.price|floatformat:"-2" }} ₽</p>
+    {% if product.description %}<p>{{ product.description|linebreaksbr }}</p>{% endif %}
+
+    {% if product.is_customizable %}
+      <p class="note">Этот товар можно кастомизировать. Конструктор появится позже.</p>
+    {% endif %}
+
+    <button class="btn" disabled>В корзину (скоро)</button>
+  </div>
+</section>
+{% endblock %}
