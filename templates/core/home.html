@@ -2,7 +2,40 @@
 
 {% block content %}
 <section class="hero">
-  <h1>Щен</h1>
-  <p>Мерч по мотивам щена Маяковского: открытки, постеры и собственные дизайны.</p>
+  <div class="hero__text">
+    <p class="hand hero__kicker">мерч по мотивам Маяковского</p>
+    <h1 class="hero__title erased">Щен</h1>
+    <p class="hero__lead">
+      Щен — домашнее прозвище Владимира Маяковского. Так поэт подписывал письма Лиле Брик,
+      оставляя рисунки себя в виде щенка.
+    </p>
+    <div class="hero__actions">
+      <a class="btn" href="{% url 'merch:list' %}">Смотреть мерч</a>
+      <a class="btn btn--ghost" href="{% url 'core:about' %}">О проекте</a>
+    </div>
+  </div>
+
+  <div class="hero__dog">{% include "includes/dog.html" %}</div>
+</section>
+
+<section class="news">
+  <h2 class="section-title">Новинки</h2>
+
+  {% if products %}
+  <div class="grid">
+    {% for p in products %}
+    <a class="card" href="{{ p.get_absolute_url }}">
+      <div class="card__img">
+        {% if p.image %}<img src="{{ p.image.url }}" alt="{{ p.title }}">{% endif %}
+      </div>
+      <div class="card__title">{{ p.title }}</div>
+      <div class="card__meta">{{ p.get_kind_display }} · {{ p.size }}</div>
+      <div class="card__price">от {{ p.price_standard|floatformat:"-2" }} ₽</div>
+    </a>
+    {% endfor %}
+  </div>
+  {% else %}
+  <p>Щен ещё не принёс товары.</p>
+  {% endif %}
 </section>
 {% endblock %}

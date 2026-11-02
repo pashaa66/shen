@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Поиграть · Щен{% endblock %}
+
+{% block content %}
+<section class="page page--center">
+  <h1>Поиграть со щеном</h1>
+  <p>Перепрыгивай препятствия. Тап или пробел — прыжок.</p>
+  {% include "includes/game.html" %}
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'js/game.js' %}"></script>
+{% endblock %}

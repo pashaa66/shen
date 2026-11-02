@@ -1,15 +1,18 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}404 · Щен{% endblock %}
 
 {% block content %}
-<section class="error-page">
-  <div class="error-page__code">404</div>
-  <h1>Страница потерялась</h1>
-  <p>Щен обнюхал все углы, но такой страницы не нашёл. Возможно, ссылка устарела или в адресе опечатка.</p>
-  <div class="error-page__actions">
-    <a class="btn" href="{% url 'core:home' %}">На главную</a>
-    <a class="btn btn--ghost" href="{% url 'merch:list' %}">Смотреть мерч</a>
-  </div>
+<section class="page page--center">
+  <h1>404</h1>
+  <p>Страница потерялась. Щен её не нашёл, зато умеет прыгать.</p>
+  {% include "includes/game.html" %}
+  <p class="card__meta" style="margin-top:12px">Тап или пробел — прыжок.</p>
+  <p style="margin-top:24px"><a class="btn" href="{% url 'core:home' %}">На главную</a></p>
 </section>
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'js/game.js' %}"></script>
 {% endblock %}

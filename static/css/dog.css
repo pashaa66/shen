@@ -1,0 +1,96 @@
+/* ---------- курсор-лапка (чёрная с белой обводкой) ---------- */
+:root {
+  --paw: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cg fill='black' stroke='white' stroke-width='1.5'%3E%3Cellipse cx='16' cy='21' rx='8' ry='6.5'/%3E%3Ccircle cx='6' cy='13' r='3.2'/%3E%3Ccircle cx='12' cy='7.5' r='3.4'/%3E%3Ccircle cx='20' cy='7.5' r='3.4'/%3E%3Ccircle cx='26' cy='13' r='3.2'/%3E%3C/g%3E%3C/svg%3E");
+}
+
+@media (hover: hover) and (pointer: fine) {
+  html, body { cursor: var(--paw) 16 16, auto; }
+  a, button, label, summary, select, [role="button"],
+  input[type="submit"], input[type="radio"], input[type="checkbox"], input[type="file"] {
+    cursor: var(--paw) 16 16, pointer;
+  }
+  input[type="text"], input[type="email"], input[type="password"],
+  input[type="number"], textarea { cursor: text; }
+}
+/* ---------- собака (картинка) ---------- */
+.dog { display: block; width: 100%; height: auto; user-select: none; -webkit-user-drag: none; }
+
+/* если собака на картинке смотрит влево, раскомментируйте: */
+/* .dog { scale: -1 1; } */
+
+/* если картинка цветная, а сайт чёрно-белый, раскомментируйте: */
+/* .dog { filter: grayscale(1); } */
+
+/* бег: подпрыгивание и лёгкий наклон */
+.dog--run { transform-origin: 50% 100%; animation: run .28s ease-in-out infinite alternate; }
+@keyframes run {
+  from { transform: translateY(0) rotate(-2deg); }
+  to   { transform: translateY(-6%) rotate(2deg); }
+}
+
+/* гавканье: прыжок и «сжатие» */
+.dog--bark { transform-origin: 50% 100%; animation: bark .3s ease-out 2; }
+@keyframes bark {
+  0%   { transform: scale(1, 1); }
+  35%  { transform: translateY(-8%) scale(.96, 1.06); }
+  60%  { transform: translateY(0) scale(1.05, .94); }
+  100% { transform: scale(1, 1); }
+}
+
+/* ---------- экран загрузки ---------- */
+.loader {
+  position: fixed; inset: 0; z-index: 9999;
+  background: #fff;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px;
+  transition: opacity .4s ease, visibility .4s ease;
+}
+.loader.is-hidden { opacity: 0; visibility: hidden; }
+.loader__dog { width: 160px; }
+.loader__track {
+  width: 260px; height: 2px;
+  background: repeating-linear-gradient(90deg, #000 0 14px, transparent 14px 28px);
+  animation: track .5s linear infinite;
+}
+@keyframes track { to { background-position: -28px 0; } }
+.loader__text {
+  font-size: 13px;
+  letter-spacing: .25em;
+  text-transform: uppercase;
+  color: #000;
+}
+.no-loader .loader { display: none; }
+
+/* ---------- игра ---------- */
+.game {
+  position: relative; height: 220px; max-width: 720px; margin: 32px auto 0;
+  border-bottom: 2px solid #000; overflow: hidden; outline: none;
+  user-select: none; -webkit-user-select: none; touch-action: manipulation;
+}
+.game__dog { position: absolute; left: 40px; bottom: 0; width: 96px; }
+.game__obs { position: absolute; left: 0; bottom: 0; background: #000; border-radius: 3px 3px 0 0; }
+.game__score { position: absolute; right: 12px; top: 8px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.game__hi { margin-left: 12px; opacity: .5; }
+.game__hint {
+  position: absolute; inset: 0; padding: 0 16px 0 150px;
+  display: flex; align-items: center; justify-content: center; text-align: center;
+  font-size: 14px; pointer-events: none;
+}
+.game__hint[hidden] { display: none; }
+
+/* ---------- страница «Спасибо за заказ» ---------- */
+.thanks__scene { position: relative; display: inline-block; margin: 56px 0 24px; }
+.thanks__dog { width: 240px; background: none; border: 0; padding: 0; }
+.thanks__bubble {
+  position: absolute; left: 50%; bottom: 100%; margin-bottom: 8px;
+  padding: 10px 18px; background: #fff; border: 2px solid #000;
+  font-weight: 700; white-space: nowrap;
+  opacity: 0; transform: translateX(-50%) scale(.6); transform-origin: bottom center;
+  transition: opacity .25s ease, transform .25s ease;
+}
+.thanks__bubble.is-visible { opacity: 1; transform: translateX(-50%) scale(1); }
+.thanks__bubble::after {
+  content: ""; position: absolute; left: 50%; top: 100%;
+  width: 12px; height: 12px; background: #fff;
+  border-right: 2px solid #000; border-bottom: 2px solid #000;
+  transform: translate(-50%, -7px) rotate(45deg);
+}

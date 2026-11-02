@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}Оплата · Щен{% endblock %}
+
+{% block content %}
+<section class="page page--narrow">
+  <h1>Оплата заказа №{{ order.pk }}</h1>
+
+  <div class="summary">
+    {% for item in order.items.all %}
+    <div class="summary__row">
+      <span>{{ item.title }} · {{ item.get_variant_display }} × {{ item.quantity }}</span>
+      <span>{{ item.line_total|floatformat:"-2" }} ₽</span>
+    </div>
+    {% endfor %}
+    <div class="summary__row"><span>Доставка</span><span>{{ order.shipping_price|floatformat:"-2" }} ₽</span></div>
+    <div class="summary__row summary__row--total"><span>Итого</span><span>{{ order.total|floatformat:"-2" }} ₽</span></div>
+  </div>
+
+  <form method="post" class="pay-actions">
+    {% csrf_token %}
+    <button class="btn" name="action" value="pay">Оплатить {{ order.total|floatformat:"-2" }} ₽</button>
+    <button class="btn btn--ghost" name="action" value="cancel">Отменить заказ</button>
+  </form>
+</section>
+{% endblock %}

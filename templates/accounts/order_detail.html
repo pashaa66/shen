@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}Заказ №{{ order.pk }} · Щен{% endblock %}
+
+{% block content %}
+<section class="page page--narrow">
+  <a class="back" href="{% url 'accounts:profile' %}">← Личный кабинет</a>
+  <h1>Заказ №{{ order.pk }}</h1>
+  <p class="card__meta">{{ order.created_at|date:"d.m.Y H:i" }} · {{ order.get_status_display }}</p>
+
+  <div class="summary">
+    {% for item in order.items.all %}
+    <div class="summary__row">
+      <span>
+        {{ item.title }} · {{ item.get_variant_display }} × {{ item.quantity }}
+        {% if item.text %}<br><small>«{{ item.text|truncatechars:120 }}»</small>{% endif %}
+      </span>
+      <span>{{ item.line_total|floatformat:"-2" }} ₽</span>
+    </div>
+    {% endfor %}
+    <div class="summary__row"><span>Доставка</span><span>{{ order.shipping_price|floatformat:"-2" }} ₽</span></div>
+    <div class="summary__row summary__row--total"><span>Итого</span><span>{{ order.total|floatformat:"-2" }} ₽</span></div>
+  </div>
+
+  <p><strong>Адрес доставки:</strong><br>{{ order.address|linebreaksbr }}</p>
+
+  {% if order.status == "new" %}
+  <form method="post" action="{% url 'orders:pay' order.token %}" class="pay-actions">
+    {% csrf_token %}
+    <a class="btn" href="{% url 'orders:pay' order.token %}">Оплатить заказ</a>
+    <button class="btn btn--ghost" name="action" value="cancel"
+            onclick="return confirm('Отменить заказ? Товары вернутся в корзину.')">Отменить заказ</button>
+  </form>
+  {% endif %}
+</section>
+{% endblock %}

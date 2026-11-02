@@ -7,7 +7,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(BASE_DIR / '.env')
 
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', '')
-DEBUG = os.environ.get('DJANGO_DEBUG', '0') == '1'
+DEBUG = os.environ.get('DJANGO_DEBUG', '0').strip().lower() in (
+    '1',
+    'true',
+    'yes',
+    'on',
+)
 ALLOWED_HOSTS = [
     h.strip()
     for h in os.environ.get(
@@ -38,6 +43,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -59,6 +65,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'core.context_processors.brand',
+                'orders.context_processors.cart',
             ],
         },
     },
@@ -82,15 +89,16 @@ TIME_ZONE = 'Europe/Kaliningrad'
 USE_I18N = True
 USE_TZ = True
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-MEDIA_URL = 'media/'
+MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
-
+WHITENOISE_USE_FINDERS = True
 LOGIN_URL = 'accounts:login'
-LOGIN_REDIRECT_URL = 'core:home'
+LOGIN_REDIRECT_URL = 'accounts:profile'
+LOGOUT_REDIRECT_URL = 'core:home'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
@@ -106,5 +114,4 @@ BRAND = {
     'tiktok': os.environ.get('BRAND_TIKTOK', ''),
 }
 
-YOOKASSA_SHOP_ID = os.environ.get('YOOKASSA_SHOP_ID', '')
-YOOKASSA_SECRET_KEY = os.environ.get('YOOKASSA_SECRET_KEY', '')
+SHIPPING_PRICE = os.environ.get('SHIPPING_PRICE', '250')

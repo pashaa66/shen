@@ -5,25 +5,88 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% block title %}Щен{% endblock %}</title>
+  <script>
+    document.documentElement.classList.add("js");
+    try { if (sessionStorage.getItem("shen_loaded")) document.documentElement.classList.add("no-loader"); } catch (e) {}
+  </script>
+  <noscript><style>.loader { display: none !important; }</style></noscript>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Oswald:wght@500;700&display=swap" rel="stylesheet">
+
   <link rel="stylesheet" href="{% static 'css/main.css' %}">
+  <link rel="stylesheet" href="{% static 'css/dog.css' %}">
+  <link rel="stylesheet" href="{% static 'css/theme.css' %}">
 </head>
 <body>
+  <!-- SVG-фильтры: рваный край бумаги и «стёртые» буквы -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+    <defs>
+      <filter id="torn" x="-3%" y="-3%" width="106%" height="106%" color-interpolation-filters="sRGB">
+        <feTurbulence type="fractalNoise" baseFrequency="0.04 0.06" numOctaves="4" seed="7" result="n"/>
+        <feDisplacementMap in="SourceGraphic" in2="n" scale="16" xChannelSelector="R" yChannelSelector="G"/>
+      </filter>
+      <filter id="torn2" x="-3%" y="-3%" width="106%" height="106%" color-interpolation-filters="sRGB">
+        <feTurbulence type="fractalNoise" baseFrequency="0.03 0.05" numOctaves="4" seed="23" result="n"/>
+        <feDisplacementMap in="SourceGraphic" in2="n" scale="22" xChannelSelector="R" yChannelSelector="G"/>
+      </filter>
+      <filter id="erase" x="0%" y="0%" width="100%" height="100%" color-interpolation-filters="sRGB">
+        <feTurbulence type="fractalNoise" baseFrequency="0.07 0.05" numOctaves="3" seed="11" result="n"/>
+        <feColorMatrix in="n" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  6 0 0 0 -2.2" result="mask"/>
+        <feComposite in="SourceGraphic" in2="mask" operator="in"/>
+      </filter>
+    </defs>
+  </svg>
+
+  <div class="grain" aria-hidden="true"></div>
+
+  <div class="loader" id="loader" aria-hidden="true">
+    <div class="loader__dog">{% include "includes/dog.html" with run=True %}</div>
+    <div class="loader__track"></div>
+    <div class="loader__text">Щен бежит</div>
+  </div>
+
   <header class="header">
     <nav class="nav nav--left">
       <a href="{% url 'core:about' %}">О проекте</a>
-      <a href="#">Мерч</a>
+      <a href="{% url 'merch:list' %}">Мерч</a>
     </nav>
 
     <a class="logo" href="{% url 'core:home' %}">Щен</a>
 
     <nav class="nav nav--right">
-      <a href="#">Личный кабинет</a>
-      <a href="#">Корзина</a>
+      {% if user.is_authenticated %}
+        <a href="{% url 'accounts:profile' %}">Личный кабинет</a>
+      {% else %}
+        <a href="{% url 'accounts:login' %}">Войти</a>
+      {% endif %}
+      <a href="{% url 'orders:cart' %}" id="cart-link">Корзина{% if cart_count %} ({{ cart_count }}){% endif %}</a>
     </nav>
   </header>
 
+  <div class="ticker" aria-hidden="true">
+    <div class="ticker__track">
+      {% for half in "ab" %}
+      <div class="ticker__half">
+        {% for i in "123" %}
+        <span>Щен</span><span>/</span><span>Маяковский</span><span>/</span><span>Открытки А6</span><span>/</span><span>Постеры А4</span><span>/</span><span>Своя картинка</span><span>/</span>
+        {% endfor %}
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  {% if messages %}
+  <div class="messages">
+    {% for message in messages %}<div class="message">{{ message }}</div>{% endfor %}
+  </div>
+  {% endif %}
+
   <main>
-    {% block content %}{% endblock %}
+    <div class="paper unfold">
+      {% block content %}{% endblock %}
+    </div>
   </main>
 
   <footer class="footer">
@@ -41,5 +104,9 @@
       <a href="{{ BRAND.tiktok }}">TikTok</a>
     </div>
   </footer>
+
+  <script src="{% static 'js/loader.js' %}"></script>
+  <script src="{% static 'js/theme.js' %}"></script>
+  {% block scripts %}{% endblock %}
 </body>
 </html>

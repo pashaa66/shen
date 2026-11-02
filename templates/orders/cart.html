@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Корзина · Щен{% endblock %}
+
+{% block content %}
+<section class="page">
+  <h1>Корзина</h1>
+
+  <div id="cart-content">
+    {% if lines %}
+    <div class="cart">
+      {% for line in lines %}
+      <div class="cart-line">
+        <div class="cart-line__img">{% if line.image_url %}<img src="{{ line.image_url }}" alt="">{% endif %}</div>
+
+        <div>
+          <div class="card__title">{{ line.product.title }} · {{ line.product.size }}</div>
+          <div class="card__meta">{{ line.variant_label }} · {{ line.unit_price|floatformat:"-2" }} ₽</div>
+          {% if line.text %}<div class="cart-line__text">«{{ line.text|truncatechars:120 }}»</div>{% endif %}
+        </div>
+
+        <form method="post" action="{% url 'orders:cart_update' line.id %}" class="cart-line__qty" data-item-id="{{ line.id }}">
+          {% csrf_token %}
+          <input type="number" name="qty" value="{{ line.qty }}" min="1" max="20">
+          <noscript><button class="btn btn--ghost btn--small">Обновить</button></noscript>
+        </form>
+
+        <div class="cart-line__total">{{ line.total|floatformat:"-2" }} ₽</div>
+
+        <form method="post" action="{% url 'orders:cart_remove' line.id %}">
+          {% csrf_token %}
+          <button class="link-btn">Удалить</button>
+        </form>
+      </div>
+      {% endfor %}
+    </div>
+
+    <div class="cart-summary">
+      <div class="cart-summary__total">Товары: {{ cart.total_price|floatformat:"-2" }} ₽</div>
+      <div class="card__meta">Доставка добавится при оформлении</div>
+      <a class="btn" href="{% url 'orders:checkout' %}">Оформить заказ</a>
+    </div>
+
+    {% else %}
+    <p>Корзина пуста.</p>
+    <p><a class="btn" href="{% url 'merch:list' %}">Перейти к мерчу</a></p>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'js/cart.js' %}"></script>
+{% endblock %}

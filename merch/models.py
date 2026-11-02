@@ -2,6 +2,11 @@ from django.db import models
 from django.urls import reverse
 
 
+class Variant(models.TextChoices):
+    STANDARD = 'standard', 'Стандарт'
+    CUSTOM = 'custom', 'Своя картинка'
+
+
 class Product(models.Model):
     class Kind(models.TextChoices):
         POSTCARD = 'postcard', 'Открытка'
@@ -11,13 +16,15 @@ class Product(models.Model):
     slug = models.SlugField('Слаг (для ссылки)', unique=True)
     kind = models.CharField('Тип', max_length=20, choices=Kind.choices)
     description = models.TextField('Описание', blank=True)
-    size = models.CharField(
-        'Размер', max_length=50, blank=True, help_text='Например: А6, 30×40 см'
+    size = models.CharField('Формат', max_length=50, blank=True)
+    price_standard = models.DecimalField(
+        'Цена: стандарт, ₽', max_digits=8, decimal_places=2, default=0
     )
-    price = models.DecimalField('Цена, ₽', max_digits=8, decimal_places=2)
-    image = models.ImageField('Изображение', upload_to='products/', blank=True)
-    is_customizable = models.BooleanField(
-        'Можно кастомизировать', default=False
+    price_custom = models.DecimalField(
+        'Цена: своя картинка, ₽', max_digits=8, decimal_places=2, default=0
+    )
+    image = models.ImageField(
+        'Стандартное изображение', upload_to='products/', blank=True
     )
     is_active = models.BooleanField('Показывать на сайте', default=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -32,3 +39,14 @@ class Product(models.Model):
 
     def get_absolute_url(self):
         return reverse('merch:detail', args=[self.slug])
+
+    @property
+    def allows_text(self):
+        return self.kind == self.Kind.POSTCARD
+
+    def price_for(self, variant):
+        return (
+            self.price_custom
+            if variant == Variant.CUSTOM
+            else self.price_standard
+        )

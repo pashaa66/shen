@@ -22,7 +22,7 @@
       </div>
       <div class="card__title">{{ p.title }}</div>
       <div class="card__meta">{{ p.get_kind_display }}{% if p.size %} · {{ p.size }}{% endif %}</div>
-      <div class="card__price">{{ p.price|floatformat:"-2" }} ₽</div>
+      <div class="card__price">от {{ p.price_standard|floatformat:"-2" }} ₽</div>
     </a>
     {% endfor %}
   </div>

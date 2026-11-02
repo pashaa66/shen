@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}Оформление заказа · Щен{% endblock %}
+
+{% block content %}
+<section class="page">
+  <h1>Оформление заказа</h1>
+
+  <div class="checkout-layout">
+    <form method="post" class="form">
+      {% csrf_token %}
+      {{ form.non_field_errors }}
+
+      {% for field in form %}
+      <div class="field">
+        <label for="{{ field.id_for_label }}">
+          {{ field.label }}{% if not field.field.required %} <small>(необязательно)</small>{% endif %}
+        </label>
+        {{ field }}
+        {{ field.errors }}
+      </div>
+      {% endfor %}
+
+      <datalist id="banks">
+        <option value="Сбербанк">
+        <option value="Т-Банк">
+        <option value="ВТБ">
+        <option value="Альфа-Банк">
+        <option value="Газпромбанк">
+        <option value="Райффайзенбанк">
+      </datalist>
+
+      <button class="btn" type="submit">Перейти к оплате</button>
+    </form>
+
+    <aside class="summary">
+      <h2>Ваш заказ</h2>
+      {% for line in lines %}
+      <div class="summary__row">
+        <span>{{ line.product.title }} {{ line.product.size }} · {{ line.variant_label }} × {{ line.qty }}</span>
+        <span>{{ line.total|floatformat:"-2" }} ₽</span>
+      </div>
+      {% endfor %}
+      <div class="summary__row"><span>Товары</span><span>{{ items_total|floatformat:"-2" }} ₽</span></div>
+      <div class="summary__row"><span>Доставка</span><span>{{ shipping|floatformat:"-2" }} ₽</span></div>
+      <div class="summary__row summary__row--total"><span>Итого</span><span>{{ total|floatformat:"-2" }} ₽</span></div>
+    </aside>
+  </div>
+</section>
+{% endblock %}

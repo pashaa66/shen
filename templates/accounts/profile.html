@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}Личный кабинет · Щен{% endblock %}
+
+{% block content %}
+<section class="page">
+  <h1>Личный кабинет</h1>
+  <p class="card__meta">{{ user.email }}</p>
+
+  <div class="cabinet">
+    <div>
+      <h2>Мои заказы</h2>
+      {% for order in orders %}
+      <a class="order-row" href="{% url 'accounts:order_detail' order.pk %}">
+        <span><strong>Заказ №{{ order.pk }}</strong><br><small>{{ order.created_at|date:"d.m.Y H:i" }}</small></span>
+        <span>{{ order.get_status_display }}</span>
+        <span>{{ order.total|floatformat:"-2" }} ₽</span>
+      </a>
+      {% empty %}
+      <p>Заказов пока нет.</p>
+      <p><a class="btn" href="{% url 'merch:list' %}">Перейти к мерчу</a></p>
+      {% endfor %}
+    </div>
+
+    <div>
+      <h2>Мои данные</h2>
+      <p class="card__meta">Подставляются при оформлении заказа.</p>
+      <form method="post" class="form">
+        {% csrf_token %}
+        {% include "includes/fields.html" %}
+        <button class="btn" type="submit">Сохранить</button>
+      </form>
+
+      <form method="post" action="{% url 'accounts:logout' %}" class="logout-form">
+        {% csrf_token %}
+        <button class="btn btn--ghost" type="submit">Выйти</button>
+      </form>
+    </div>
+  </div>
+</section>
+{% endblock %}

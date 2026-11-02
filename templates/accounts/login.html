@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}Вход · Щен{% endblock %}
+
+{% block content %}
+<section class="page page--narrow">
+  <h1>Вход</h1>
+  <form method="post" class="form">
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+    {% include "includes/fields.html" %}
+    <input type="hidden" name="next" value="{{ next }}">
+    <button class="btn" type="submit">Войти</button>
+  </form>
+  <p class="auth-alt">Нет аккаунта? <a href="{% url 'accounts:register' %}">Зарегистрироваться</a></p>
+</section>
+{% endblock %}

@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Спасибо за заказ! · Щен{% endblock %}
+
+{% block content %}
+<section class="page page--center">
+  <div class="thanks__scene">
+    <div class="thanks__bubble" id="bubble">Гав! Спасибо за заказ!</div>
+    <button type="button" class="thanks__dog" id="thanks-dog" aria-label="Погладить щена"
+            data-sound="{% static 'sounds/bark.mp3' %}">
+      {% include "includes/dog.html" %}
+    </button>
+  </div>
+
+  <h1>Заказ №{{ order.pk }} оплачен</h1>
+  <p>Мы свяжемся с вами по почте {{ order.email }}.</p>
+  <p style="margin-top:24px"><a class="btn" href="{% url 'merch:list' %}">Вернуться к мерчу</a></p>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'js/bark.js' %}"></script>
+{% endblock %}
