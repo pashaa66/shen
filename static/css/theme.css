@@ -6,6 +6,9 @@
   --font-display: "Oswald", Impact, "Arial Narrow", sans-serif;
   --font-hand: "Caveat", "Segoe Script", "Comic Sans MS", cursive;
 
+  /* соотношение сторон картинок товаров (ширина / высота), подберите под свои макеты */
+  --product-ratio: 16 / 9;
+
   /* зерно плёнки (серый шум) */
   --noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n' x='0' y='0'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 
@@ -138,8 +141,23 @@ body::before {
 .btn:hover:not(:disabled) { background: #fff; color: #000; }
 .btn--ghost:hover:not(:disabled) { background: var(--ink); color: #fff; }
 
-/* экран загрузки в цвет бумаги */
+/* ============ экран загрузки в цвет бумаги ============ */
 .loader { background: var(--paper); }
+.loader__text { color: #000; }
+
+/* ============ картинки товаров ============ */
+/* страница товара: блок по размеру картинки, без пустого серого места */
+.product { align-items: start; }
+.product__img { aspect-ratio: auto; height: auto; background: none; }
+.product__img img { width: 100%; height: auto; display: block; }
+
+/* карточки в каталоге и на главной: единое соотношение сторон */
+.card__img { aspect-ratio: var(--product-ratio); }
+
+/* миниатюры в корзине */
+.cart-line { grid-template-columns: 120px 1fr auto auto auto; }
+.cart-line__img { aspect-ratio: var(--product-ratio); width: 120px; }
+.cart-line__img img { object-fit: contain; }
 
 /* ============ мобильные ============ */
 @media (max-width: 700px) {
@@ -150,6 +168,11 @@ body::before {
   .hero { grid-template-columns: 1fr; }
   .hero__dog { max-width: 220px; order: -1; }
   .ticker { font-size: 12px; }
+}
+
+@media (max-width: 800px) {
+  .cart-line { grid-template-columns: 96px 1fr; }
+  .cart-line__img { width: 96px; }
 }
 
 /* ============ без анимации, если так настроена система ============ */
